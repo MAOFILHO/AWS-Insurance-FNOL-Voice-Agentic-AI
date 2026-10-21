@@ -1,10 +1,8 @@
 # FNOL voice agent — evaluation regression gate.
 #
-# ⚠ NOT INSTALLED. GitHub Actions reads workflows only from the repository root, and a
-# `.github/workflows/` directory inside a project folder is silently ignored — no error, no warning.
-# Copying this file to /Users/marco/K21/Real-world/.github/workflows/ is Phase 10's job and requires
-# its own approval by absolute path, per PROJECT_ROOT's scope rule. It is authored here so the gate is
-# reviewable now and installing it later is a copy rather than a design exercise.
+# This repo was extracted from the Portfolio-Projects monorepo; the workflow now lives here directly
+# (it used to be authored under .github/workflows-for-monorepo-root/ and copied to the monorepo root).
+# The job is named `eval-gate`, the status check main's branch protection should require.
 #
 # Runs Tier A only: no AWS credentials, no model calls, $0.00 per run. Tier B costs money and is
 # stochastic, so gating a PR on it would make the build both expensive and flaky. Tier B's numbers enter
@@ -21,24 +19,14 @@
 # The day Tier B numbers enter this gate, this is the comparison they get instead of compare()'s flat
 # tolerance — proven correct here first.
 
-name: AWS-Insurance-FNOL-Voice-Agentic-AI Eval Gate
+name: Eval Gate
 
 on:
   pull_request:
-    paths:
-      - 'AWS-Insurance-FNOL-Voice-Agentic-AI/**'
   push:
     branches: [main]
-    paths:
-      - 'AWS-Insurance-FNOL-Voice-Agentic-AI/**'
   workflow_dispatch: {}   # manual trigger, added 2026-08-15 (Phase 10 correction-of-record) so a first
-                           # real run no longer depends on a PR or a push to main. No `paths:` filter --
-                           # the concept doesn't apply to workflow_dispatch, so a manual run always fires
-                           # regardless of what changed.
-
-defaults:
-  run:
-    working-directory: AWS-Insurance-FNOL-Voice-Agentic-AI
+                           # real run no longer depends on a PR or a push to main.
 
 jobs:
   eval-gate:
@@ -71,7 +59,7 @@ jobs:
         run: |
           BASE="${{ github.event.pull_request.base.sha }}"
           if [ -z "$BASE" ]; then echo "not a PR; skipping"; exit 0; fi
-          CHANGED=$(git diff --name-only "$BASE" HEAD -- . | sed 's|^AWS-Insurance-FNOL-Voice-Agentic-AI/||')
+          CHANGED=$(git diff --name-only "$BASE" HEAD)
           python - "$CHANGED" <<'PY'
           import sys
           from evals.regression import baseline_is_stale

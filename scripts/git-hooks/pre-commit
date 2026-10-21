@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# Pre-commit hook: reject a commit that introduces a duplicate OI/D identifier or RESULTS.md section
+# number. Install with `make install-hooks` (.git/hooks/ is not tracked, so each clone installs once).
+set -euo pipefail
+cd "$(git rev-parse --show-toplevel)"
+if [[ -x .venv/bin/python ]]; then python=.venv/bin/python; else python=python3; fi
+exec "$python" scripts/check_duplicate_identifiers.py

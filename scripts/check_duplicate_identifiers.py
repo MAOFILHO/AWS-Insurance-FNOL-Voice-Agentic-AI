@@ -49,7 +49,7 @@ GRANDFATHERING A PRE-EXISTING COLLISION
 
 RUNS AS
 
-    Appended to the same pre-commit hook as the `PROJECT_ROOT` scope check
+    Runs from the pre-commit hook installed by `make install-hooks`
     (`scripts/git-hooks/pre-commit`, installed via `make install-hooks`), and as
     `make verify-duplicate-identifiers` for a standalone check against whatever is currently staged.
 
@@ -78,7 +78,7 @@ import sys
 
 #: This project's own directory, relative to the git repository root -- same constant, same reasoning,
 #: as `check_project_root_scope.py`.
-PROJECT_ROOT = "AWS-Insurance-FNOL-Voice-Agentic-AI/"
+PROJECT_ROOT = ""  # standalone repo: the project is the git root
 
 #: Identifiers with a specific, recorded reason a collision was left unresolved rather than fixed
 #: immediately. Empty today -- see the module docstring's "Grandfathering" section before adding to any

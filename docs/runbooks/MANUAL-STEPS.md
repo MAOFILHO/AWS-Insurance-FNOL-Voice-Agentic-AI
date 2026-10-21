@@ -97,8 +97,9 @@ note if that's still outstanding.
 
 ## 5. Required-status-check branch protection for the eval gate
 
-- **What:** marking the `AWS-Insurance-FNOL-Voice-Agentic-AI Eval Gate` workflow's `eval-gate` job as a
-  **required status check** on `main` in `MAOFILHO/Portfolio-Projects`'s GitHub repo settings, so a red run
+- **What:** marking the `Eval Gate` workflow's `eval-gate` job as a
+  **required status check** on `main` in `MAOFILHO/AWS-Insurance-FNOL-Voice-Agentic-AI`'s GitHub repo settings (re-apply
+  after the 2026-10-21 extraction from `MAOFILHO/Portfolio-Projects`, where the same rule was set), so a red run
   actually blocks a merge instead of only reporting one.
 - **Why manual:** a GitHub branch-protection rule is a repo setting, not a resource either Terraform or
   this project's own IaC can reach — same category as item 4 above, a real toggle with no API surface this

@@ -207,20 +207,18 @@ make verify-billable   # read-only: assert no unexpected billable resource exist
 ```
 
 `bootstrap`/`deploy`/`destroy`/`eval`/`redteam` are the canonical names (per the Definition of Done);
-`provision`/`teardown` are aliases kept for consistency with sibling projects in the monorepo.
+`provision`/`teardown` are aliases kept for consistency with the sibling projects.
 
 ---
 
-## Monorepo conventions (this is a folder inside `MAOFILHO/Portfolio-Projects`)
+## Repository conventions (standalone repo, extracted from `MAOFILHO/Portfolio-Projects`)
 
-Git root is `/Users/marco/K21/Real-world`, remote `git@github.com:MAOFILHO/Portfolio-Projects.git`.
-Naming convention is `<Cloud>-<Domain-Descriptor>-<AI|ML>`, Title-Case-Hyphenated.
+Remote: `MAOFILHO/AWS-Insurance-FNOL-Voice-Agentic-AI`. This project was extracted from the
+`Portfolio-Projects` monorepo on 2026-10-21 (history before that covers only this folder). The repo root is
+the project root. Naming convention is `<Cloud>-<Domain-Descriptor>-<AI|ML>`, Title-Case-Hyphenated.
 
-**GitHub Actions reads workflows only from the repository root.** A `.github/workflows/` directory inside a
-project folder is silently ignored — no error, no warning. Workflows are therefore authored in
-`.github/workflows-for-monorepo-root/` with a project-name prefix, `paths:`-scoped to this folder, each job
-setting `working-directory`, and copied to the monorepo root on install. Repo variables are prefixed
-(`FNOL_*`) so they cannot collide with a sibling project's settings.
+Workflows live in `.github/workflows/` (`eval-gate.yml`; the job is named `eval-gate`, the status check
+`main`'s branch protection should require). Repo variables keep the `FNOL_*` prefix.
 
 Layout follows the sibling project `AWS-Bedrock-Agentic-FineTuning-Platform` for `src/<pkg>/`,
 `infra/terraform/`, and `docs/{COST-ACTUALS,RESULTS,LESSONS-LEARNED,INCIDENT-LOG}.md`. **It diverges on
@@ -240,27 +238,13 @@ directly for control-plane reads, bypassing all three wrapped classes and the gu
 `PROJECT_STATE.md` "Carried forward" table and `docs/RESULTS.md` §12.4 for the two file:line sites and the
 remediation status.)
 
-### Scope rule — writes outside PROJECT_ROOT
+### Historical note — scope rule inside the monorepo
 
-> Writes outside PROJECT_ROOT require explicit approval, requested by ABSOLUTE
-> PATH, before the change. Monorepo convention is not pre-authorisation. Three
-> known future instances: the root .gitignore (done), /Users/marco/K21/Real-world/
-> .github/workflows/ (Phase 10), and the root README project index (Phase 12).
-> Each gets its own approval.
-
-`PROJECT_ROOT` is `/Users/marco/K21/Real-world/AWS-Insurance-FNOL-Voice-Agentic-AI`. The git root is its
-parent, so **being in the same git repository does not make a file in scope** — that includes the monorepo
-root `.gitignore` and `README.md`, `.github/workflows/`, and every sibling project.
-
-**None of the three instances above is pre-approved. Ask when you reach it.**
-
-Two corollaries, from how this rule was actually earned:
-
-1. Name the **absolute path** when requesting approval — not "the root config", not a bare filename.
-2. If a change crosses a boundary that a plan or verification criterion asserted, **say so plainly and record
-   the criterion as violated**. Do not let it lapse silently. Approval of a change's *intent* is not licence
-   to go quiet about its *scope*. See `PROJECT_STATE.md` → D9/D10 and the Phase 0 verification table, where
-   item 1 is recorded as knowingly violated rather than marked passed.
+While this project was a folder inside the monorepo, a "writes outside PROJECT_ROOT need approval by absolute
+path" rule and a pre-commit check (`check_project_root_scope.py`) enforced the boundary. Both were retired
+at extraction: the repo root is now the project root, so nothing is outside it. `PROJECT_STATE.md` and
+`docs/` keep the original wording as a record. `make install-hooks` now installs a small local hook that
+runs `scripts/check_duplicate_identifiers.py`.
 
 ---
 

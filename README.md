@@ -10,7 +10,7 @@
 ![Terraform](https://img.shields.io/badge/Terraform-≥1.9-7B42BC?style=flat&logo=terraform&logoColor=white&labelColor=1a1a2e)
 ![mypy](https://img.shields.io/badge/mypy-strict-2A6DB2?style=flat&labelColor=1a1a2e)
 
-[![Eval Gate](https://github.com/MAOFILHO/Portfolio-Projects/actions/workflows/aws-insurance-fnol-voice-agentic-ai-eval-gate.yml/badge.svg?branch=main)](https://github.com/MAOFILHO/Portfolio-Projects/actions/workflows/aws-insurance-fnol-voice-agentic-ai-eval-gate.yml)
+[![Eval Gate](https://github.com/MAOFILHO/AWS-Insurance-FNOL-Voice-Agentic-AI/actions/workflows/eval-gate.yml/badge.svg?branch=main)](https://github.com/MAOFILHO/AWS-Insurance-FNOL-Voice-Agentic-AI/actions/workflows/eval-gate.yml)
 
 ## Project Description
 
@@ -617,8 +617,8 @@ adding a single check.
 
 ## CI/CD — GitHub Actions
 
-One workflow, [`AWS-Insurance-FNOL-Voice-Agentic-AI Eval Gate`](https://github.com/MAOFILHO/Portfolio-Projects/actions/workflows/aws-insurance-fnol-voice-agentic-ai-eval-gate.yml),
-runs on every push to `main` and every PR touching this project, and is a **required GitHub status check**
+One workflow, [`Eval Gate`](https://github.com/MAOFILHO/AWS-Insurance-FNOL-Voice-Agentic-AI/actions/workflows/eval-gate.yml),
+runs on every push to `main` and every PR, and is a **required GitHub status check**
 — a PR cannot merge while it's red (`docs/runbooks/MANUAL-STEPS.md` §5, the one permitted manual repo
 setting).
 
@@ -863,10 +863,9 @@ the session log in [`PROJECT_STATE.md`](PROJECT_STATE.md).
 is vendored from any source repository. See the attestation in
 [`docs/phase0/DOMAIN-ARTIFACTS.md`](docs/phase0/DOMAIN-ARTIFACTS.md).
 
-This project is one top-level folder in the
-[`MAOFILHO/Portfolio-Projects`](https://github.com/MAOFILHO/Portfolio-Projects) monorepo. GitHub Actions
-reads workflows only from the repository root, so this project's workflows live in
-`.github/workflows-for-monorepo-root/` and are copied to the root on install.
+This project was extracted from the
+[`MAOFILHO/Portfolio-Projects`](https://github.com/MAOFILHO/Portfolio-Projects) monorepo; workflows now live in
+`.github/workflows/`.
 
 ## Author
 

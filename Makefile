@@ -1,6 +1,6 @@
 .PHONY: ingest test lint format typecheck eval redteam bootstrap verify-backend verify-inference \
         verify-destroy-scope verify-flows verify-lex verify-charset verify-lambda-execution \
-        verify-project-root-scope verify-duplicate-identifiers verify-slot-legality-mapping \
+        verify-duplicate-identifiers verify-slot-legality-mapping \
         verify-xray-trace-shape \
         install-hooks deploy provision destroy teardown
 
@@ -67,7 +67,7 @@ verify-backend:
 	exit $$rc
 
 # Provision everything destroyable. Canonical name per the Definition of Done; `provision` is the alias
-# kept for consistency with sibling projects in the monorepo.
+# kept for consistency with the sibling projects.
 #
 # COST GATE. Every resource this creates is inside the `APPROVED: Phase 8` authorisation of 2026-08-12
 # (provisioned resources, under $2) and the table backing that number is `docs/phase8/BUILD-PLAN.md` §3.
@@ -142,35 +142,19 @@ verify-slot-legality-mapping:
 verify-charset:
 	@$(VENV)/python scripts/check_charset.py
 
-# The PROJECT_ROOT scope-rule backstop (docs/RESULTS.md §14.3, CLAUDE.md's scope rule): checks whatever
-# is CURRENTLY STAGED, not the tree -- so this is a manual escape hatch and the thing `install-hooks`
-# wires into `.git/hooks/pre-commit`, not something `make lint` calls (lint checks the whole tree; this
-# checks a commit-in-progress, which only exists mid-`git add`).
-verify-project-root-scope:
-	@$(VENV)/python scripts/check_project_root_scope.py
-
 # The duplicate-identifier ledger backstop (docs/audits/2026-08-16-uncommitted-source-audit.md's
 # "Numbering collision" / "Fail-loud controls vs. conventions" sections): same STAGED-not-tree scope as
-# verify-project-root-scope above, for the same reason -- a manual escape hatch for the check
-# `install-hooks` wires into the same pre-commit shim.
+# STAGED-not-tree scope (a commit-in-progress, not the whole tree) -- a manual escape hatch for the
+# check `install-hooks` wires into the pre-commit hook.
 verify-duplicate-identifiers:
 	@$(VENV)/python scripts/check_duplicate_identifiers.py
 
-# `.git/hooks/` is not tracked by git -- a fresh clone has no hook until this runs once. The hook
-# installed here is the SHARED monorepo dispatcher (../scripts/git-hooks/pre-commit), not the local copy
-# this target used to install -- as of 2026-08-19 (Marco-approved, AskUserQuestion "Multi-project
-# dispatcher") git allows only one `.git/hooks/pre-commit`, and this project now shares that slot with
-# Azure-Banking-Voice-Agentic-AI (and any future project that registers itself in the dispatcher) instead
-# of each project's install-hooks silently overwriting the other's. The old local
-# scripts/git-hooks/pre-commit is removed; the dispatcher still calls this project's own
-# check_project_root_scope.py and check_duplicate_identifiers.py exactly as before, it just routes to
-# them from outside PROJECT_ROOT rather than duplicating them there. See the dispatcher's own header
-# comment for the full rationale.
+# `.git/hooks/` is not tracked by git -- a fresh clone has no hook until this runs once. Installs the
+# local pre-commit hook (scripts/git-hooks/pre-commit), which runs check_duplicate_identifiers.py.
 install-hooks:
-	@git_root=$$(git rev-parse --show-toplevel); \
-	cp "$$git_root/scripts/git-hooks/pre-commit" "$$git_root/.git/hooks/pre-commit"; \
-	chmod +x "$$git_root/.git/hooks/pre-commit"; \
-	echo "install-hooks: installed shared dispatcher to $$git_root/.git/hooks/pre-commit"
+	@cp scripts/git-hooks/pre-commit .git/hooks/pre-commit; \
+	chmod +x .git/hooks/pre-commit; \
+	echo "install-hooks: installed scripts/git-hooks/pre-commit to .git/hooks/pre-commit"
 
 # Read the deployed Lex release back from the service and compare it against what Terraform declared.
 #
